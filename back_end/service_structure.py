@@ -14,7 +14,7 @@ def search_for_service(service, db):
 
 def insert_service(service, user, password, time, db):
 
-    return db.append(PasswordManager(f'{len(db)}', service, user, password, time))
+    return db.append(PasswordManager(len(db) + 1, service, user, password, time))
 
 
 def list_service(db):

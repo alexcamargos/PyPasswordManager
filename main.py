@@ -41,7 +41,9 @@ def clear_cli():
 
 
 def master_login():
+    clear_cli()
     show_title()
+
     user = input('\nLOGIN: ')
     u_pass = input('Password: ')
 
@@ -54,6 +56,9 @@ def master_login():
 
 
 def show_menu(menu):
+
+    clear_cli()
+    show_title()
 
     for item in menu:
         print(f'\t{item}')
@@ -75,6 +80,9 @@ def input_service():
 
     """
 
+    clear_cli()
+    show_title()
+
     print('Insira as informações do serviço.\n')
     serv = input('Serviço: ')
     user = input('Usuário: ')
@@ -87,6 +95,7 @@ def add_service_menu():
     serv, user, u_pass = input_service()
     insert_service(serv, user, u_pass, localtime(), password_manager)
     show_continue()
+    clear_cli()
 
 
 def search_service_menu(serv):
@@ -100,18 +109,23 @@ def search_service_menu(serv):
         print('\nServiço não existe no banco de dados!!!')
 
     show_continue()
+    clear_cli()
 
 
 def del_service_menu(service):
 
-    print('Deletar serviços: (s)im, (N)ão: ')
-    del_service(service, password_manager)
+    clear_cli()
+
+    opt = input('Deletar serviços: (s)im, (N)ão: ')
+    if opt.lower() == 's':
+        del_service(service, password_manager)
 
 
 def edit_service_menu(service):
     identity = search_for_service(service, password_manager)
     serv, user, u_pass = input_service()
     edit_service(serv, user, u_pass, password_manager[identity[0] - 1])
+    clear_cli()
 
 
 def show_service_menu():
@@ -119,6 +133,7 @@ def show_service_menu():
     """Mostra os dados dos serviços salvos no banco de dados."""
 
     clear_cli()
+    show_title()
     list_service(password_manager)
     show_continue()
 
