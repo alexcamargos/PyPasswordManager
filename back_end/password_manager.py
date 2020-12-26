@@ -1,8 +1,9 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 class PasswordManager(object):
 
     def __init__(self, identity, service, user, password, date):
-
         self.__identity = identity
         self.__service = service
         self.__user = user
@@ -10,11 +11,15 @@ class PasswordManager(object):
         self.__date = date
 
     def __repr__(self):
-        return f'Service: {self.__service}\nUser: {self.__user}\nPassword: {self.__password}'
+        return f'Service#{self.__identity}\n\tService: {self.__service}\n\tUser: {self.__user}\n\tPassword: {self.__password}'
 
     @property
     def identity(self):
         return self.__identity
+
+    @identity.setter
+    def identity(self, identity):
+        self.__identity = identity
 
     @property
     def service(self):
@@ -43,3 +48,7 @@ class PasswordManager(object):
     @property
     def date(self):
         return self.__date
+
+    @date.setter
+    def date(self, date):
+        self.__date = date

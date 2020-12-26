@@ -1,4 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import os
+from time import localtime
+
+from back_end.password_manager import PasswordManager
+from back_end.service_structure import search_for_service, insert_service, list_service, edit_service, del_service
+
 
 # Variáveis
 _TITLE = 'Py Password Manager'
@@ -9,13 +17,12 @@ master_user = 'alex'
 master_pass = '123456'
 
 # Dicionário de dados temporário.
-# Dados no padrão:
-# {'NomeServiço':'Nome do Servido', 'Usuario':'Nome do Usuário', 'Senha':'Senha do Usuário', 'Data':'Data de Gravação'}
-password_manager = {'Service#1': {'Service': 'YouTube', 'User': 'alcamargos', 'Password': '123456'},
-                    'Service#2': {'Service': 'DropBox', 'User': 'camargos', 'Password': '7895644'},
-                    'Service#3': {'Service': 'Google', 'User': 'lopescamargos', 'Password': 'camargos123456'},
-                    'Service#4': {'Service': 'Hotmail', 'User': 'sanders', 'Password': '654321'}
-                    }
+password_manager = [
+    PasswordManager(1, 'YouTube', 'alcamargos', '123456', localtime()),
+    PasswordManager(2, 'DropBox', 'camargos', '7895644', localtime()),
+    PasswordManager(3, 'Google', 'lopescamargos', 'camargos123456', localtime()),
+    PasswordManager(4, 'Hotmail', 'sanders', '654321', localtime())
+]
 
 
 def show_title():
@@ -34,6 +41,7 @@ def clear_cli():
 
 
 def master_login():
+    show_title()
     user = input('\nLOGIN: ')
     u_pass = input('Password: ')
 
@@ -59,58 +67,51 @@ def show_menu(menu):
 
 
 def input_service():
+
     """Solicita do usuário as informações sobre os serviços!
 
     Return:
-        dicionário
+        PasswordManager instance
 
     """
+
+    print('Insira as informações do serviço.\n')
     serv = input('Serviço: ')
     user = input('Usuário: ')
     u_pass = input('Senha: ')
 
-    return {'Service': serv, 'User': user, 'Password': u_pass}
+    return serv, user, u_pass
 
 
-def add_service():
-    n = len(password_manager)
-
-    password_manager[f'Service#{n}'] = input_service()
-
+def add_service_menu():
+    serv, user, u_pass = input_service()
+    insert_service(serv, user, u_pass, localtime(), password_manager)
     show_continue()
 
 
-def check_services_exist(serv, pm):
+def search_service_menu(serv):
 
-    """Checa se um serviço ja esta no banco de dados."""
+    identity = search_for_service(serv, password_manager)
 
-    return [True for data in pm.values() if serv in data.values()]
-
-
-def search_service_menu(name):
-
-    if check_services_exist(name, password_manager):
-        print('\nServiço existe no banco de dados!!!')
+    if identity:
+        print('\nServiço existe no banco de dados!!!\n')
+        print(password_manager[identity[0] - 1])
     else:
-        print('\nServiço no existe no banco de dados!!')
+        print('\nServiço não existe no banco de dados!!!')
+
     show_continue()
 
 
-def delete_service_menu(service):
+def del_service_menu(service):
 
-    for i in range(1, len(password_manager) + 1):
-        if service in password_manager[f'Service#{i}'].values():
-            del password_manager[f'Service#{i}']
+    print('Deletar serviços: (s)im, (N)ão: ')
+    del_service(service, password_manager)
 
 
-def edit_service_menu(service, db):
-
-    for i in range(1, len(db) + 1):
-        if service in db[f'Service#{i}'].values():
-            new_data = input_service()
-            db[f'Service#{i}']['Service'] = new_data['Service']
-            db[f'Service#{i}']['User'] = new_data['User']
-            db[f'Service#{i}']['Password'] = new_data['Password']
+def edit_service_menu(service):
+    identity = search_for_service(service, password_manager)
+    serv, user, u_pass = input_service()
+    edit_service(serv, user, u_pass, password_manager[identity[0] - 1])
 
 
 def show_service_menu():
@@ -118,18 +119,8 @@ def show_service_menu():
     """Mostra os dados dos serviços salvos no banco de dados."""
 
     clear_cli()
-
-    for service in password_manager.items():
-        print(service[0])
-        print(f"\tServiço: {service[1]['Service']}")
-        print(f"\tUsuário: {service[1]['User']}")
-        print(f"\tSenha: {service[1]['Password']}")
+    list_service(password_manager)
     show_continue()
-
-
-def insert_menu():
-    print('Insira as informações do serviço.\n')
-    add_service()
 
 
 def main():
@@ -150,27 +141,26 @@ def main():
     while run:
         opt = show_menu(main_menu)
         if opt == 1:
-            insert_menu()
+            add_service_menu()
         elif opt == 2:
             search_service_menu(input('Serviço: '))
         elif opt == 3:
             show_service_menu()
         elif opt == 4:
-            serv_edit = input('Informe o nome do seriço que deseja editar: ')
-            if check_services_exist(serv_edit, password_manager):
-                edit_service_menu(serv_edit, password_manager)
+            service_edit = input('Informe o nome do seriço que deseja editar: ')
+            if search_for_service(service_edit, password_manager):
+                edit_service_menu(service_edit)
             else:
                 print('Não existe este serviço no banco de dados!')
                 show_continue()
         elif opt == 5:
             serv_del = input('Informe o nome do serviço que deseja deletar: ')
-            delete_service_menu(serv_del)
+            del_service_menu(serv_del)
         elif opt == 6:
             exit()
 
 
 if __name__ == '__main__':
-    show_title()
-
+    # main()
     if master_login():
         main()
