@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from back_end.password_manager import PasswordManager
+from password_manager import PasswordManager
 
 
 def search_for_service(service, db):

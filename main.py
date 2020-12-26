@@ -4,8 +4,8 @@
 import os
 from time import localtime
 
-from back_end.password_manager import PasswordManager
-from back_end.service_structure import search_for_service, insert_service, list_service, edit_service, del_service
+from password_manager import PasswordManager
+from service_structure import search_for_service, insert_service, list_service, edit_service, del_service
 
 
 # Variáveis
