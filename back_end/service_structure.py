@@ -9,7 +9,7 @@ def search_for_service(service, db):
 
     """Verifica se um serviço ja esta no banco de dados."""
 
-    return [serv.identity for serv in db if serv.service == service]
+    return [serv.identity for serv in db if serv.service == service][0]
 
 
 def insert_service(service, user, password, time, db):
@@ -35,7 +35,7 @@ def del_service(service, db):
 
     identity = search_for_service(service, db)
     if identity:
-        del db[identity[0] - 1]
+        del db[identity - 1]
 
-        for serv in range(identity[0] - 1, len(db)):
+        for serv in range(identity - 1, len(db)):
             db[serv].identity -= 1

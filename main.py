@@ -104,7 +104,7 @@ def search_service_menu(serv):
 
     if identity:
         print('\nServiço existe no banco de dados!!!\n')
-        print(password_manager[identity[0] - 1])
+        print(password_manager[identity - 1])
     else:
         print('\nServiço não existe no banco de dados!!!')
 
@@ -124,7 +124,7 @@ def del_service_menu(service):
 def edit_service_menu(service):
     identity = search_for_service(service, password_manager)
     serv, user, u_pass = input_service()
-    edit_service(serv, user, u_pass, password_manager[identity[0] - 1])
+    edit_service(serv, user, u_pass, password_manager[identity - 1])
     clear_cli()
 
 
@@ -170,7 +170,11 @@ def main():
                 show_continue()
         elif opt == 5:
             serv_del = input('Informe o nome do serviço que deseja deletar: ')
-            del_service_menu(serv_del)
+            if search_for_service(serv_del, password_manager):
+                del_service_menu(serv_del)
+            else:
+                print('Não existe este serviço no banco de dados!')
+                show_continue()
         elif opt == 6:
             exit()
 
